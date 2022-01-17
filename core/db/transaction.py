@@ -6,6 +6,7 @@ from core.db.session import session
 
 class Propagation(BaseEnum):
     REQUIRED = "required"
+    REQUIRES_NEW = "required_new"
 
 
 class Transaction:
@@ -16,15 +17,24 @@ class Transaction:
         @wraps(function)
         async def decorator(*args, **kwargs):
             try:
-                result = await self.run_required(
-                    function=function, args=args, kwargs=kwargs,
-                )
+                if self.propagation == Propagation.REQUIRED:
+                    result = await self.run_required(
+                        function=function, args=args, kwargs=kwargs,
+                    )
+                elif self.propagation == Propagation.REQUIRES_NEW:
+                    result = await self.run_requires_new(
+                        function=function, args=args, kwargs=kwargs,
+                    )
+                else:
+                    result = await self.run_requires_new(
+                        function=function, args=args, kwargs=kwargs,
+                    )
             except Exception as e:
                 session.rollback()
                 raise e
             return result
 
-        return decorator()
+        return decorator
 
     async def run_required(self, function, args, kwargs):
         is_transaction_active = session().is_active
@@ -35,6 +45,15 @@ class Transaction:
         result = await function(*args, **kwargs)
         if not is_transaction_active:
             session.commit()
+
+        return result
+
+    async def run_requires_new(self, function, args, kwargs):
+        if not session().is_active:
+            session.begin()
+
+        result = await function(*args, **kwargs)
+        session.commit()
 
         return result
 
