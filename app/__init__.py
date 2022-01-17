@@ -3,13 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from core.di import init_di
-from core.exception.base import CustomException
+from core.exceptions.base import CustomException
 from core.fastapi.middlewares.sqlalchemy import SQLAlchemyMiddleware
 from core.fastapi.middlewares.authentication import (
     AuthenticationMiddleware,
     AuthBackend,
 )
-# from app.user import user_router
+from app.user import user_router
+from app.household_ledger import household_ledger_router
 
 
 def init_cors(app: FastAPI) -> None:
@@ -23,20 +24,20 @@ def init_cors(app: FastAPI) -> None:
 
 
 def init_routers(app: FastAPI) -> None:
-    # app.include_router(user_router)
-    pass
+    app.include_router(user_router)
+    app.include_router(household_ledger_router)
 
 
 def init_listeners(app: FastAPI) -> None:
-    @app.exception_handlers(CustomException)
-    async def custom_exceoption_handler(exc: CustomException):
+    @app.exception_handler(CustomException)
+    async def custom_exception_handler(request: Request, exc: CustomException):
         return JSONResponse(
             status_code=exc.code,
             content={"error_code": exc.error_code, "message": exc.message},
         )
 
 
-def on_auth_error(exc: Exception):
+def on_auth_error(request: Request, exc: Exception):
     status_code, error_code, message = 401, None, str(exc)
     if isinstance(exc, CustomException):
         status_code = int(exc.code)
@@ -50,7 +51,7 @@ def on_auth_error(exc: Exception):
 def init_middleware(app: FastAPI) -> None:
     app.add_middleware(SQLAlchemyMiddleware)
     app.add_middleware(
-        AuthenticationMiddleware, backend=AuthBackend(), on_error=on_auth_error()
+        AuthenticationMiddleware, backend=AuthBackend(), on_error=on_auth_error,
     )
 
 
