@@ -15,6 +15,14 @@
 
 ![스크린샷 2022-01-18 오후 3 45 35](https://user-images.githubusercontent.com/67960152/149884734-c593e35a-4256-480a-9cb7-104df21fea7b.png)
 
+### 사용 기술스택
+- Python3
+- Fastapi
+- Alembic
+- Mysql
+- SQLAlchemy
+
+
 ### api 
 1. 고객은 이메일과 비밀번호 입력을 통해서 회원 가입을 할 수 있습니다. 
 ```python
