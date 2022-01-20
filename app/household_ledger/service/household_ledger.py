@@ -138,4 +138,3 @@ class HouseholdLedgerService:
             raise HouseholdLedgerNotFoundException
 
         return household_ledger
-

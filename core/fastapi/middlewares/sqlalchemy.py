@@ -36,3 +36,4 @@ class SQLAlchemyMiddleware(BaseHTTPMiddleware):
             reset_session_context(context=context)
 
         return response
+

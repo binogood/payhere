@@ -1,6 +1,7 @@
 import bcrypt
 
 from typing import Union, NoReturn
+from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
 from pythondi import inject
 
@@ -52,6 +53,19 @@ class UserService:
         access_token = TokenHelper.create_token({'user': user.id})
         return access_token
 
+        # response = RedirectResponse(url="/")
+        # response.set_cookie(
+        #     "Authorization",
+        #     value=f"Bearer {access_token}",
+        # )
+        # print(response.headers.items())
+        # return response
+
+    # @Transaction(propagation=Propagation.REQUIRED)
+    # async def logout_user(self, request: Request, response: Response):
+    #     response = RedirectResponse(url="/")
+    #     response.delete_cookie("Authorization")
+    #     return response
 
     async def _check_password(self, password1: str, password2: str) -> bool:
         return bcrypt.checkpw(password1.encode("utf8"), password2.encode("utf-8"))

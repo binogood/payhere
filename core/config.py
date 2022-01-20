@@ -8,7 +8,7 @@ class Config(BaseSettings):
     ENV: str = "development"
     DEBUG: bool = True
     APP_HOST: str = "0.0.0.0"
-    APP_POST: int = 8000
+    APP_PORT: int = 8000
     DB_URL: str = f"mysql+pymysql://{DB_URL['user']}:{DB_URL['password']}@{DB_URL['host']}:{DB_URL['port']}/{DB_URL['db']}"
     JWT_SECRET_KEY: str = "payhere"
     JWT_ALGORITHM: str = "HS256"

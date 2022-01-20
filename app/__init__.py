@@ -60,6 +60,7 @@ DESCRIPTION = "Payhere"
 
 def create_app() -> FastAPI:
     app = FastAPI(title="Payhere", description=DESCRIPTION,)
+    app.router.redirect_slashes = False
     init_routers(app=app)
     init_cors(app=app)
     init_listeners(app=app)

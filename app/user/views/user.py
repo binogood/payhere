@@ -31,13 +31,15 @@ async def create_user(request: CreateUserRequest):
 async def login_user(request: LoginUserRequest):
     access_token = await UserService().login_user(**request.dict())
     return {"access_token": access_token, "token_type": "bearer"}
+    # return await UserService().login_user(**request.dict())
 
 
-# @user_router.get(
-#     "/logout",
-#     responses={"400": {"model": ExceptionResponseSchema}},
-#     dependencies=[Depends(PermissionDependency([IsAuthenticated]))],
-#     summary="Logout User",
-# )
-# async def logout_user(request: Request, response: Response):
-#     return await UserService().logout_user(response)
+@user_router.get(
+    "/logout",
+    response_class=HTMLResponse,
+    responses={"400": {"model": ExceptionResponseSchema}},
+    dependencies=[Depends(PermissionDependency([IsAuthenticated]))],
+    summary="Logout User",
+)
+async def logout_user(request: Request, response: Response):
+    return await UserService().logout_user(request, response)

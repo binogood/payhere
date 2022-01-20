@@ -7,7 +7,7 @@ from core.config import config
 
 class TokenHelper:
     @staticmethod
-    def create_token(payload: dict, expire_period: int=3600) -> str:
+    def create_token(payload: dict, expire_period: int = 3600) -> str:
         token = jwt.encode(
             payload={
                 **payload,
